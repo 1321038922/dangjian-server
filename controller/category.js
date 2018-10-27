@@ -6,11 +6,13 @@ const auth = require('./auth')
 
 router.get('/',async (req,res, next) =>{
     try {
+        const total = await categorymodel.count()
         const dataList = await categorymodel.find()
         res.json({
             code:200,
             data:dataList,
-            msg:'success'
+            msg:'success',
+            total
         })
     }catch(err) {
         next(err)

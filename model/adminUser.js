@@ -13,9 +13,9 @@ const adminUser  = new mongoose.Schema({
         required: true
     },
     desc: String,
-    job: Number,
+    job: String,
     phone:Number,
-    sex: Number
+    sex: String
 },{versionKey: false, timestamps: {createdAt: 'create_time', updatedAt:
  'update_time'}});
 

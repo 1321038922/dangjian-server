@@ -16,22 +16,30 @@ router.post('/', auth, async (req, res, next) => {//添加管理员
             phone,
             sex
         } = req.body
-        const data = await adminUserModel.create({
-            username,
-            nickname,
-            avatar,
-            password,
-            desc,
-            job,
-            phone,
-            sex
-        })
+        const userinfo = await adminUserModel.findOne({ username })
+        if (userinfo) {
+            res.json({
+                code: 400,
+                msg: '该用户已存在'
+            })
+        } else {
+            const data = await adminUserModel.create({
+                username,
+                nickname,
+                avatar,
+                password,
+                desc,
+                job,
+                phone,
+                sex
+            })
+            res.json({
+                code: 200,
+                data,
+                msg: '新建用户成功'
+            })
+        }
 
-        res.json({
-            code: 200,
-            data,
-            msg: '新建用户成功'
-        })
     } catch (err) {
         next(err)
     }
@@ -73,7 +81,7 @@ router.post('/login', async (req, res, next) => {//登录
     }
 })
 
-router.post('/update',auth, (req, res, next) => {
+router.post('/update', auth, (req, res, next) => {
     try {
         if (req.session.user) {
             req.session.user = null
@@ -93,31 +101,86 @@ router.post('/update',auth, (req, res, next) => {
 })
 router.get('/', auth, async (req, res, next) => {
     try {
-        let { page = 1, pagesize = 10, id } = req.query;
+        let { page = 1, pageSize = 10 } = req.query;
         page = parseInt(page)
-        pagesize = parseInt(pagesize)
-        if (!id) {
-            let user = await adminUserModel.find().skip((page - 1) * pagesize).limit(pagesize).sort({ _id: -1 }).select("-password")
-                .then(data => {
-                    res.json({
-                        data,
-                        code: 200,
-                        msg: 'success'
-                    })
-                })
-        } else {
-            await adminUserModel.findOne({ _id: 'id' }).then(data => {
+        pageSize = parseInt(pageSize)
+        const total = await adminUserModel.count()
+        let user = await adminUserModel.find().skip((page - 1) * pageSize).limit(pageSize).sort({ _id: -1 }).select("-password")
+            .then(data => {
                 res.json({
                     data,
                     code: 200,
-                    msg: 'success'
+                    msg: 'success',
+                    total
                 })
             })
-        }
     } catch (err) {
         next(err)
     }
 
+})
+router.get('/:id', auth, async (req, res, next) => {
+    try {
+        let { id } = req.params
+        await adminUserModel.findOne({ _id: id }).then(data => {
+            res.json({
+                data,
+                code: 200,
+                msg: 'success'
+            })
+        })
+    } catch (err) {
+        next(err)
+    }
+
+})
+router.delete('/:id', auth, async (req, res, next) => {
+    try {
+        let { id } = req.params
+        await adminUserModel.deleteOne({ _id: id })
+        res.json({
+            code: 200,
+            msg: '删除成功'
+        })
+
+    } catch (err) {
+        next(err)
+    }
+
+})
+
+router.patch("/:id", auth, async (req, res, next) => {
+    try {
+        let {id} = req.params
+        const {
+            nickname,
+            avatar,
+            password,
+            desc,
+            job,
+            phone,
+            sex
+        } = req.body
+        const data = await adminUserModel.findById(id) 
+        const updateData = await data.update({
+            $set:{
+            nickname,
+            avatar,
+            password,
+            desc,
+            job,
+            phone,
+            sex
+            }
+        })
+        res.json({
+            code: 200,
+            msg: '修改成功',
+            data: updateData
+        })
+    } catch (err) {
+        next(err)
+    }
 })
 
 module.exports = router
