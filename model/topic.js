@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
  
 const topic  = new mongoose.Schema({
-    commenCount:Number,
     content:{
         type:String,
         required:true
@@ -11,10 +10,10 @@ const topic  = new mongoose.Schema({
         type:mongoose.SchemaTypes.ObjectId,
         ref:'admin_user'
     },
-    common:[
+    commons:[
         {
             type:mongoose.SchemaTypes.ObjectId,
-            ref:'topic'
+            ref:'common',
         }
     ]
 },{versionKey: false, timestamps: {createdAt: 'create_time', updatedAt:

@@ -11,10 +11,24 @@ const adminUser  = new mongoose.Schema({
         type:String,
         required: true
     },
-    desc: String,
-    job: Number,
+    hometown:String,
+    nickname:Number,
+    idCard:Number,
+    address:String,
+    branchName:Number,
+    joinPartyTime:String,
+    lastPayTime:String,
+    branchName:String,
+    birthday:String,
     phone:Number,
-    sex: Number
+    sex: Number,
+    salary: Number,
+    qqNum: Number,
+    vxNum: Number,
+    age: Number,
+    jobRank:String,//学历
+    nation:String,
+    totalScore:Number
 },{versionKey: false, timestamps: {createdAt: 'create_time', updatedAt:
  'update_time'}});
 

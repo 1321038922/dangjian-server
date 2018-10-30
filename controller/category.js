@@ -18,5 +18,19 @@ router.get('/',async (req,res, next) =>{
         next(err)
     }
 })
-
+router.post('/', async (req,res, next)=> {
+    try{
+        let {title,icon} = req.body
+        const category = await categorymodel.create({
+            title,
+            icon
+        })
+        res.json({
+            code: 200,
+            msg: '新建分类成功'
+        })
+    }catch(err){
+        next(err)
+    }
+})
 module.exports = router

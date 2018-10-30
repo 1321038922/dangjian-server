@@ -35,4 +35,34 @@ router.post('/', auth, async (req, res, next) => {
     }
 })
 
+router.get('/',async (req,res, next)=> {
+    try{
+        let { page = 1, pageSize = 10} = req.query;
+        page = parseInt(page);
+        pageSize = parseInt(pageSize);
+        const count = await commonModel.count()
+        const data = await commonModel
+        .find()
+        .skip((page - 1)*pageSize)
+        .limit(pageSize)
+        .sort({_id:-1})
+        .populate({
+            path:'user',
+            select:'nickname avatar'
+        })
+        .populate({
+            path:'topic'
+        })
+
+        res.json({
+            code:200,
+            msg:'success',
+            count,
+            data
+        })
+    }catch(err){
+        next(err)
+    }
+})
+
 module.exports = router

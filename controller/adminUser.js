@@ -155,7 +155,6 @@ router.patch("/:id", auth, async (req, res, next) => {
         const {
             nickname,
             avatar,
-            password,
             desc,
             job,
             phone,
@@ -166,7 +165,6 @@ router.patch("/:id", auth, async (req, res, next) => {
             $set:{
             nickname,
             avatar,
-            password,
             desc,
             job,
             phone,
@@ -176,6 +174,60 @@ router.patch("/:id", auth, async (req, res, next) => {
         res.json({
             code: 200,
             msg: '修改成功',
+            data: updateData
+        })
+    } catch (err) {
+        next(err)
+    }
+})
+router.patch("/userinfo/:id", auth, async (req, res, next) => {
+    try {
+        let {id} = req.params
+        const {
+            nickname,
+            username,
+            avatar,
+            desc,
+            job,
+            phone,
+            sex
+        } = req.body
+        const data = await adminUserModel.findById(id) 
+        const updateData = await data.update({
+            $set:{
+            nickname,
+            username,
+            avatar,
+            desc,
+            job,
+            phone,
+            sex
+            }
+        })
+        res.json({
+            code: 200,
+            msg: '修改成功',
+            data: updateData
+        })
+    } catch (err) {
+        next(err)
+    }
+})
+router.patch("/password/:id", auth, async (req, res, next) => {
+    try {
+        let {id} = req.params
+        const {
+            password
+        } = req.body
+        const data = await adminUserModel.findById(id) 
+        const updateData = await data.update({
+            $set:{
+                password
+            }
+        })
+        res.json({
+            code: 200,
+            msg: '修改密码成功',
             data: updateData
         })
     } catch (err) {

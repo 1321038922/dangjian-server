@@ -36,8 +36,9 @@ router.get('/',async (req,res,next) =>{
         .sort({_id:-1})
         .populate({
             path:'user',
-            select:'username avatar',
-            
+            select:'nickname avatar',
+        }).populate({
+            path:'commons',
         })
         res.json({
             code:200,
@@ -51,12 +52,12 @@ router.get('/',async (req,res,next) =>{
 })
 router.get('/getCommon/:topicId',async (req,res,next) =>{
     try{
-        const topicId = req.params.topicId
+        const {topicId} = req.params
         const dataList= await commonModel
         .find({topic:topicId})
         .populate({
             path:'user',
-            select:'username avatar',  
+            select:'nickname avatar',  
         })
         res.json({
             code:200,
